@@ -74,20 +74,27 @@ public class HouseKeeperHandledUsersCounter {
 
         int count = 1 + StringUtils.countMatches(substring, ",");
 
-        Integer currentCount = fileNameToCount.getOrDefault(fileName, 0);
 
-        fileNameToCount.put(fileName, currentCount + count);
+        String key = makeMapKey(fileName, "GameMonitorLogger-", "-1.log");
 
+
+        Integer currentCount = fileNameToCount.getOrDefault(key, 0);
+
+        fileNameToCount.put(key, currentCount + count);
+
+    }
+
+    private String makeMapKey(String fileName, String prefix, String postfix) {
+        return fileName.substring(prefix.length(), fileName.length() - postfix.length());
     }
 
     private void showCount() {
 
-        fileNameToCount.forEach((key, value) -> {
-            String fileName = key;
-            int count = value;
-            System.out.println(key + ", " + count);
+        fileNameToCount.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> System.out.println(e.getKey() + ", " + e.getValue()));
 
-        });
 
     }
 
